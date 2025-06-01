@@ -14,3 +14,6 @@ The app integrates with TORN's external game API securely; authenticate using a 
 
 ## Setup
 <!-- add more here -->
+
+## License
+This project is licensed under the [MIT License](./LICENSE).
