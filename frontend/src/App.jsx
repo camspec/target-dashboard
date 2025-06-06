@@ -42,7 +42,9 @@ function App() {
         <button type="submit">Submit</button>
       </form>
       {submittedKey && (
-        <p>API key saved: <code>{submittedKey}</code></p>
+        <p>
+          API key saved: <code>{submittedKey}</code>
+        </p>
       )}
     </>
   );
