@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
   const [apiKey, setApiKey] = useState("");
+  const [submittedKey, setSubmittedKey] = useState("");
+
+  useEffect(() => {
+    const savedKey = localStorage.getItem("tornApiKey");
+    if (savedKey) {
+      setApiKey(savedKey);
+      setSubmittedKey(savedKey);
+    }
+  }, []);
 
   const handleChange = (e) => {
     setApiKey(e.target.value);
@@ -10,7 +19,8 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(`API Key entered: ${apiKey}`);
+    localStorage.setItem("tornApiKey", apiKey);
+    setSubmittedKey(apiKey);
   };
 
   return (
@@ -27,9 +37,13 @@ function App() {
           onChange={handleChange}
           placeholder="Your API Key"
           required
+          autoComplete="new-password"
         />
         <button type="submit">Submit</button>
       </form>
+      {submittedKey && (
+        <p>API key saved: <code>{submittedKey}</code></p>
+      )}
     </>
   );
 }
