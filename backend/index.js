@@ -14,10 +14,15 @@ app.get("/", (req, res) => {
 });
 
 // getting targets from database
-// todo: only access targets associated with api key
 app.get("/api/targets", async (req, res) => {
+  const api_key = req.query.api_key;
+
+  if (!api_key) {
+    return res.status(400).json({ error: "api_key parameter is required" });
+  }
+
   try {
-    const result = await pool.query("SELECT * from targets");
+    const result = await pool.query("SELECT * FROM targets WHERE user_api_key = $1", [api_key]);
     res.json(result.rows);
   } catch {
     res.status(500).json({ error: "Internal server error" });
