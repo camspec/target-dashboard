@@ -22,7 +22,10 @@ app.get("/api/targets", async (req, res) => {
   }
 
   try {
-    const result = await pool.query("SELECT * FROM targets WHERE user_api_key = $1", [api_key]);
+    const result = await pool.query(
+      "SELECT * FROM targets WHERE user_api_key = $1",
+      [api_key]
+    );
     res.json(result.rows);
   } catch {
     res.status(500).json({ error: "Internal server error" });
@@ -40,6 +43,17 @@ app.post("/api/targets", async (req, res) => {
   }
 
   try {
+    // check if user exists before adding target
+    const userCheck = await pool.query(
+      "SELECT 1 FROM users WHERE api_key = $1",
+      [user_api_key]
+    );
+    if (userCheck.rowCount == 0) {
+      return res
+        .status(400)
+        .json({ error: "Invalid user_api_key:  user does not exist" });
+    }
+
     await pool.query(
       "INSERT INTO targets (user_api_key, target_id) VALUES ($1, $2)",
       [user_api_key, target_id]
