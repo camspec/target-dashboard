@@ -39,25 +39,6 @@ app.post("/api/users", async (req, res) => {
   }
 });
 
-// getting targets from database
-app.get("/api/targets", async (req, res) => {
-  const user_api_key = req.query.user_api_key;
-
-  if (!user_api_key) {
-    return res.status(400).json({ error: "user_api_key is required" });
-  }
-
-  try {
-    const result = await pool.query(
-      "SELECT * FROM targets WHERE user_api_key = $1",
-      [user_api_key]
-    );
-    res.json(result.rows);
-  } catch {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
 // adding a new target
 app.post("/api/targets", async (req, res) => {
   const { user_api_key, target_id } = req.body;
@@ -98,6 +79,25 @@ app.post("/api/targets", async (req, res) => {
     res.status(201).json({ message: "Target added" });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// getting targets from database
+app.get("/api/targets", async (req, res) => {
+  const user_api_key = req.query.user_api_key;
+
+  if (!user_api_key) {
+    return res.status(400).json({ error: "user_api_key is required" });
+  }
+
+  try {
+    const result = await pool.query(
+      "SELECT * FROM targets WHERE user_api_key = $1",
+      [user_api_key]
+    );
+    res.json(result.rows);
+  } catch {
     res.status(500).json({ error: "Internal server error" });
   }
 });
