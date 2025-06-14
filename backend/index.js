@@ -76,6 +76,33 @@ app.post("/api/targets", async (req, res) => {
   }
 });
 
+// deleting a target
+app.delete("/api/targets", async (req, res) => {
+  const { user_api_key, target_id } = req.body;
+
+  if (!user_api_key || !target_id) {
+    return res
+      .status(400)
+      .json({ error: "user_api_key and target_id are required" });
+  }
+
+  try {
+    const result = await pool.query(
+      "DELETE FROM targets WHERE user_api_key = $1 AND target_id = $2",
+      [user_api_key, target_id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Target not found"} );
+    }
+
+    res.json({ message: "Target deleted"} );
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
