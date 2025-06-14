@@ -13,12 +13,38 @@ app.get("/", (req, res) => {
   res.send("Backend server running");
 });
 
+// adding a new user
+app.post("/api/users", async (req, res) => {
+  const api_key = req.body.api_key;
+
+  if (!api_key) {
+    return res.status(400).json({ error: "api_key is required" });
+  }
+
+  try {
+    // check if user already exists
+    const duplicateCheck = await pool.query(
+      "SELECT 1 FROM users WHERE api_key = $1",
+      [api_key]
+    );
+    if (duplicateCheck.rowCount > 0) {
+      return res.status(409).json({ error: "User already exists" });
+    }
+
+    await pool.query("INSERT INTO users (api_key) VALUES ($1)", [api_key]);
+    res.status(201).json({ message: "User added" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // getting targets from database
 app.get("/api/targets", async (req, res) => {
   const user_api_key = req.query.user_api_key;
 
   if (!user_api_key) {
-    return res.status(400).json({ error: "user_api_key parameter is required" });
+    return res.status(400).json({ error: "user_api_key is required" });
   }
 
   try {
@@ -51,7 +77,7 @@ app.post("/api/targets", async (req, res) => {
     if (userCheck.rowCount == 0) {
       return res
         .status(400)
-        .json({ error: "Invalid user_api_key:  user does not exist" });
+        .json({ error: "Invalid user_api_key: user does not exist" });
     }
 
     // check if target already exists
@@ -61,7 +87,7 @@ app.post("/api/targets", async (req, res) => {
     );
     if (duplicateCheck.rowCount > 0) {
       return res
-        .status(400)
+        .status(409)
         .json({ error: "Target already exists for this user" });
     }
 
@@ -93,12 +119,12 @@ app.delete("/api/targets", async (req, res) => {
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Target not found"} );
+      return res.status(404).json({ error: "Target not found" });
     }
 
-    res.json({ message: "Target deleted"} );
+    res.json({ message: "Target deleted" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
