@@ -54,6 +54,17 @@ app.post("/api/targets", async (req, res) => {
         .json({ error: "Invalid user_api_key:  user does not exist" });
     }
 
+    // check if target already exists
+    const duplicateCheck = await pool.query(
+      "SELECT 1 FROM targets WHERE user_api_key = $1 AND target_id = $2",
+      [user_api_key, target_id]
+    );
+    if (duplicateCheck.rowCount > 0) {
+      return res
+        .status(400)
+        .json({ error: "Target already exists for this user" });
+    }
+
     await pool.query(
       "INSERT INTO targets (user_api_key, target_id) VALUES ($1, $2)",
       [user_api_key, target_id]
