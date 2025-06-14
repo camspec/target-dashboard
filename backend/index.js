@@ -18,7 +18,7 @@ app.get("/api/targets", async (req, res) => {
   const user_api_key = req.query.user_api_key;
 
   if (!user_api_key) {
-    return res.status(400).json({ error: "api_key parameter is required" });
+    return res.status(400).json({ error: "user_api_key parameter is required" });
   }
 
   try {
