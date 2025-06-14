@@ -15,16 +15,16 @@ app.get("/", (req, res) => {
 
 // getting targets from database
 app.get("/api/targets", async (req, res) => {
-  const api_key = req.query.api_key;
+  const user_api_key = req.query.user_api_key;
 
-  if (!api_key) {
+  if (!user_api_key) {
     return res.status(400).json({ error: "api_key parameter is required" });
   }
 
   try {
     const result = await pool.query(
       "SELECT * FROM targets WHERE user_api_key = $1",
-      [api_key]
+      [user_api_key]
     );
     res.json(result.rows);
   } catch {
