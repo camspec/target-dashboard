@@ -39,6 +39,28 @@ app.post("/api/users", async (req, res) => {
   }
 });
 
+// fetch a specific user
+// targets are fetched via api key and everything else is external,
+// but we'll still store user settings
+app.get("/api/users", async (req, res) => {
+  const api_key = req.params.api_key;
+
+  try {
+    const result = await pool.query("SELECT * FROM users WHERE api_key = $1", [
+      api_key,
+    ]);
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // adding a new target
 app.post("/api/targets", async (req, res) => {
   const { user_api_key, target_id } = req.body;
@@ -97,7 +119,8 @@ app.get("/api/targets", async (req, res) => {
       [user_api_key]
     );
     res.json(result.rows);
-  } catch {
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -125,7 +148,7 @@ app.delete("/api/targets", async (req, res) => {
     res.json({ message: "Target deleted" });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
