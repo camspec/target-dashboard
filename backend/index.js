@@ -33,8 +33,8 @@ app.post("/api/users", async (req, res) => {
 
     await pool.query("INSERT INTO users (api_key) VALUES ($1)", [api_key]);
     res.status(201).json({ message: "User added" });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -55,8 +55,8 @@ app.get("/api/users", async (req, res) => {
     }
 
     res.json(result.rows[0]);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -99,8 +99,8 @@ app.post("/api/targets", async (req, res) => {
       [user_api_key, target_id]
     );
     res.status(201).json({ message: "Target added" });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -119,8 +119,8 @@ app.get("/api/targets", async (req, res) => {
       [user_api_key]
     );
     res.json(result.rows);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -146,8 +146,8 @@ app.delete("/api/targets", async (req, res) => {
     }
 
     res.json({ message: "Target deleted" });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
