@@ -28,7 +28,7 @@ function App() {
       <h1>IntelGrid</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="api-key-input">
-          Enter your Limited Access API Key:
+          Enter your <span id="limited-access">Limited Access</span> API Key:
         </label>
         <input
           id="api-key-input"
