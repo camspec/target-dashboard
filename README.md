@@ -12,6 +12,7 @@ The app integrates with TORN's external game API securely; authenticate using a 
 - Real-time countdown timers for player states (e.g. hospital time)
 - Live data fetching from external API
 - Secure handling of keys and data
+- Rate limiting
 
 ## Setup
 Ensure you have the following installed:
