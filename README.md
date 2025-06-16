@@ -1,4 +1,4 @@
-# IntelGrid WIP
+# IntelGrid
 IntelGrid is a full-stack web application allowing users to create and manage personalized target lists and track real-time status updates.
 
 The app integrates with TORN's external game API securely; authenticate using a Limited Access API key.
